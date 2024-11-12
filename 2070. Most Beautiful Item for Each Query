@@ -1,0 +1,66 @@
+ek list di gayi hai items ki, jisme har item ka price aur beauty value diya gaya hai. Har query ke liye, jo price limit deta hai, ye find karna hai ki us price limit ke andar ka maximum beauty ka item kaunsa hai. Agar koi item us price limit ke andar nahi hai, toh answer 0 hoga
+class Solution {
+    public int[] maximumBeauty(int[][] items, int[] queries) {
+         Arrays.sort(items,(a,b)-> a[0]==b[0]? b[1]-a[1] : a[0]-b[0]);
+Yeh line items array ko sort kar rahi hai.
+Pehle items ko price ke hisaab se ascending order me sort kiya ja raha hai (a[0] - b[0]), jahan a[0] aur b[0] ka matlab hai item ka price.
+Agar do items ka price same ho, toh beauty ke hisaab se sort karenge (b[1] - a[1]). Iska matlab hai ki agar price same ho, toh jo item zyada beauty wala hoga, woh pehle aayega.
+        int currMaxBeauty=0;
+        TreeMap<Integer,Integer> map=new TreeMap<>();
+        for(int[] item:items)
+        {
+            int price=item[0];
+            int beauty=item[1];
+
+            if(currMaxBeauty>=beauty)
+              continue;
+            currMaxBeauty=beauty;
+            map.put(price,currMaxBeauty);
+            
+        }
+currMaxBeauty: Yeh variable rakha gaya hai jisme hum ab tak ka maximum beauty store karte jaenge.
+TreeMap<Integer, Integer> map = new TreeMap<>();: Yeh ek TreeMap use kar raha hai jo ki items ko price ke hisaab se sorted rakhta hai. TreeMap automatically sorted order me items ko rakhta hai.
+Loop: Har item ko check kar rahe hain (for (int[] item : items)):
+Agar currMaxBeauty already us item ke beauty se zyada ya barabar hai, toh hum us item ko skip kar dete hain (continue statement se).
+Agar item ka beauty zyada hai, toh currMaxBeauty update karte hain aur us price ke liye map me beauty store karte hain (map.put(price, currMaxBeauty)).
+Yeh step ensure karta hai ki har price ke liye maximum beauty store ho jaye.
+         int no_queries=queries.length;
+        int[] answer=new int[no_queries];
+
+        for(int i=0;i<no_queries;i++)
+        {
+            Map.Entry<Integer,Integer> entry=map.floorEntry(queries[i]);
+            if(entry!=null)
+            {
+                answer[i]=entry.getValue();
+            }
+            else
+            {
+                answer[i]=0;
+            }
+        }
+no_queries: Yeh variable store karta hai ki kitni queries hain.
+answer: Yeh array store karega har query ke liye answer (maximum beauty)
+Har query ke liye (for (int i = 0; i < no_queries; i++)), hum map.floorEntry(query) use kar rahe hain.
+floorEntry(query): Yeh method map me se woh entry return karega jiska price query ke price se kam ya barabar ho. Agar aisa koi item nahi hai, toh yeh null return karega.
+Agar entry milti hai (entry != null), toh us item ka beauty (entry.getValue()) answer me store karte hain.
+Agar entry nahi milti, matlab koi item us price ke andar nahi milta, toh answer 0 set karte hain.
+        return answer;
+        
+        //Time limit exceed
+        /*int[] result = new int[queries.length];
+        for(int i=0; i<queries.length; i++){
+            int maxbeauty=0;
+            int qPrice=queries[i];
+            for(int[] item : items){
+                int price=item[0];
+                int beauty=item[1];
+                if(price <= qPrice){
+                    maxbeauty=Math.max(maxbeauty,beauty);
+                }
+            }
+            result[i]=maxbeauty;
+        }
+        return result;*/
+    }
+}
